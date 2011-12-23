@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "SongTest Home" do
   include Rack::Test::Methods
-
+  
   describe "GET '/'" do
     it "should return 200 OK" do
       get '/'

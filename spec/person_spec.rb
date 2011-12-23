@@ -4,15 +4,10 @@ describe "SongTest Person" do
   include Rack::Test::Methods
 
   before(:each) do    
-    header 'Content-Type', 'application/json'
-    header 'Accept', 'application/json'
+    @person = FactoryGirl.attributes_for(:person)
   end
   
-  describe "POST '/person'" do  
-    before(:each) do
-      @person = FactoryGirl.attributes_for(:person)
-    end
-    
+  describe "POST '/person'" do    
     it "without first_name should return 400" do
       @person[:first_name] = nil
 
@@ -37,7 +32,7 @@ describe "SongTest Person" do
       last_response.body.should == validation_error(:email, 400, 'Email must not be blank')
     end
 
-    it "valid person should return 201 and correct id" do      
+    it "with valid person should return 201 and correct id" do      
       post '/person', @person.to_json
       
       last_response.status.should == 201
@@ -55,9 +50,8 @@ describe "SongTest Person" do
     end
     
     it "with people in database should return 200 and correct number of people" do
-      person = FactoryGirl.attributes_for(:person)
-      post '/person', person.to_json
-      post '/person', person.to_json
+      post '/person', @person.to_json
+      post '/person', @person.to_json
       
       get '/person'
       
@@ -75,8 +69,7 @@ describe "SongTest Person" do
     end
     
     it "with valid id should return 200 and correct id" do
-      person = FactoryGirl.attributes_for(:person)
-      post '/person', person.to_json
+      post '/person', @person.to_json
       
       get '/person/1'
       

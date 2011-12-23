@@ -15,6 +15,11 @@ DataMapper.auto_upgrade!
 
 RSpec.configure do |config|
   config.before(:each) do
+    # Set default content-type and accept to json, since this is a JSON-only API
+    header 'Content-Type', 'application/json'
+    header 'Accept', 'application/json'
+
+    # Set up and start datamapper transaction
     repository(:default) do
       transaction = DataMapper::Transaction.new(repository)
       transaction.begin
@@ -23,6 +28,7 @@ RSpec.configure do |config|
   end
     
   config.after(:each) do
+    # Roll back datamapper transaction
     repository(:default).adapter.pop_transaction.rollback
   end
 end
