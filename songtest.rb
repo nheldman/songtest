@@ -97,6 +97,8 @@ class SongTest < Sinatra::Base
     end
   end
 
+  ############################ HOME ############################
+  
   ## get / - return 'SongTest' as string
   get '/' do
     'SongTest'
@@ -113,6 +115,8 @@ class SongTest < Sinatra::Base
     end
   end
 
+  ############################ PERSON ##########################
+  
   ## GET /person/:id - return person with specified id
   get '/person/:id', :provides => :json do
     content_type :json
@@ -215,7 +219,7 @@ class SongTest < Sinatra::Base
     end
   end
   
-  ####################################### GENRE ############################
+  ############################ GENRE ############################
   
   ## get /genre - return all genres
   get '/genre/?', :provides => :json do
