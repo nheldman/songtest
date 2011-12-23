@@ -1,16 +1,15 @@
-## Thing
+## SongTest
 # RESTful API example
-# - manages single resource called Thing /thing
 # - all results (including error messages) returned as JSON (Accept header)
 
 ## requires
-require 'sinatra'
+require 'sinatra/base'
 require 'json'
 require 'time'
 require 'pp'
 
 ### datamapper requires
-require 'datamapper'
+require 'data_mapper'
 require 'dm-types'
 require 'dm-timestamps'
 require 'dm-validations'
@@ -22,8 +21,8 @@ module StandardProperties
   def self.included(other)
     other.class_eval do
       property :id, other::Serial
-      # property :created_at, DateTime
-      # property :updated_at, DateTime
+      property :created_at, DateTime
+      property :updated_at, DateTime
     end
   end
 end
@@ -35,17 +34,27 @@ module Validations
   end
 end
 
-### Thing
-class Thing
+### Person
+class Person
   include DataMapper::Resource
   include StandardProperties
   extend Validations
 
-  property :name, String, :required => true
-  property :status, String
+  property :first_name, String, :required => true
+  property :last_name, String, :required => true
+  property :email, String, :required => true
+  
+  #def to_json(*a)
+  #  {
+  #    'first_name' => self.first_name,
+  #    'last_name' => self.last_name,
+  #    'email' => self.email
+  #  }.to_json(*a)
+  #end
 end
 
 ## set up db
+ENV['RACK_ENV'] = 'test'
 env = ENV["RACK_ENV"]
 puts "RACK_ENV: #{env}"
 if env.to_s.strip == ""
@@ -67,8 +76,8 @@ def logger
   @logger ||= Logger.new(STDOUT)
 end
 
-## ThingResource application
-class ThingResource < Sinatra::Base
+## SongTest application
+class SongTest < Sinatra::Base
   set :methodoverride, true
 
   ## helpers
@@ -96,25 +105,30 @@ class ThingResource < Sinatra::Base
     end
   end
 
-  ## GET /thing - return all things
-  get "/thing/?", :provides => :json do
+  ## get / - return 'SongTest' as string
+  get '/' do
+    'SongTest'
+  end
+  
+  ## get /person - return all people
+  get '/person/?', :provides => :json do
     content_type :json
-
-    if things = Thing.all
-      things.to_json
+    
+    if people = Person.all
+      people.to_json
     else
       json_status 404, "Not found"
     end
   end
 
-  ## GET /thing/:id - return thing with specified id
-  get "/thing/:id", :provides => :json do
+  ## GET /person/:id - return person with specified id
+  get '/person/:id', :provides => :json do
     content_type :json
 
     # check that :id param is an integer
-    if Thing.valid_id?(params[:id])
-      if thing = Thing.first(:id => params[:id].to_i)
-        thing.to_json
+    if Person.valid_id?(params[:id])
+      if person = Person.first(:id => params[:id].to_i)
+        person.to_json
       else
         json_status 404, "Not found"
       end
@@ -124,33 +138,38 @@ class ThingResource < Sinatra::Base
     end
   end
 
-  ## POST /thing/ - create new thing
-  post "/thing/?", :provides => :json do
+  ## POST /person/ - create new person
+  post '/person/?', :provides => :json do
     content_type :json
 
-    new_params = accept_params(params, :name, :status)
-    thing = Thing.new(new_params)
-    if thing.save
-      headers["Location"] = "/thing/#{thing.id}"
+    # Use this code to choose which parameters to grab
+    #new_params = accept_params(params, :first_name, :last_name, :email)
+    #person = Person.new(new_params)
+    
+    json = JSON.parse(request.body.read.to_s)
+    
+    person = Person.new(json)
+    if person.save
+      headers["Location"] = "/person/#{person.id}"
       # http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.5
       status 201 # Created
-      thing.to_json
+      person.to_json
     else
-      json_status 400, thing.errors.to_hash
+      json_status 400, person.errors.to_hash
     end
   end
 
-  ## PUT /thing/:id/:status - change a thing's status
-  put_or_post "/thing/:id/status/:status", :provides => :json do
+  ## PUT /person/:id/:email - change a person's email
+  put_or_post '/person/:id/email/:email', :provides => :json do
     content_type :json
 
-    if Thing.valid_id?(params[:id])
-      if thing = Thing.first(:id => params[:id].to_i)
-        thing.status = params[:status]
-        if thing.save
-          thing.to_json
+    if Person.valid_id?(params[:id])
+      if person = Person.first(:id => params[:id].to_i)
+        person.email = params[:email]
+        if person.save
+          person.to_json
         else
-          json_status 400, thing.errors.to_hash
+          json_status 400, person.errors.to_hash
         end
       else
         json_status 404, "Not found"
@@ -160,19 +179,19 @@ class ThingResource < Sinatra::Base
     end
   end
 
-  ## PUT /thing/:id - change or create a thing
-  put "/thing/:id", :provides => :json do
+  ## PUT /person/:id - change or create a person
+  put '/person/:id', :provides => :json do
     content_type :json
 
-    new_params = accept_params(params, :name, :status)
+    new_params = accept_params(params, :first_name, :last_name, :email)
 
-    if Thing.valid_id?(params[:id])
-      if thing = Thing.first_or_create(:id => params[:id].to_i)
-        thing.attributes = thing.attributes.merge(new_params)
-        if thing.save
-          thing.to_json
+    if Person.valid_id?(params[:id])
+      if person = Person.first_or_create(:id => params[:id].to_i)
+        person.attributes = person.attributes.merge(new_params)
+        if person.save
+          person.to_json
         else
-          json_status 400, thing.errors.to_hash
+          json_status 400, person.errors.to_hash
         end
       else
         json_status 404, "Not found"
@@ -182,12 +201,12 @@ class ThingResource < Sinatra::Base
     end
   end
 
-  ## DELETE /thing/:id - delete a specific thing
-  delete "/thing/:id/?", :provides => :json do
+  ## DELETE /person/:id - delete a specific person
+  delete '/person/:id/?', :provides => :json do
     content_type :json
 
-    if thing = Thing.first(:id => params[:id].to_i)
-      thing.destroy!
+    if person = Person.first(:id => params[:id].to_i)
+      person.destroy!
       # http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.7
       status 204 # No content
     else
@@ -225,4 +244,6 @@ class ThingResource < Sinatra::Base
     json_status 500, env['sinatra.error'].message
   end
 
+  # start the server if ruby file executed directly
+  run! if app_file == $0
 end

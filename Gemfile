@@ -7,9 +7,8 @@ gem "dm-constraints"
 gem "dm-core"
 gem "dm-is-state_machine"
 gem "dm-migrations"
-gem "dm-redis-adapter"
-gem 'dm-sqlite-adapter'
-gem 'dm-mysql-adapter'
+gem "dm-sqlite-adapter"
+gem "dm-postgres-adapter"
 gem "dm-serializer"
 gem "dm-timestamps"
 gem "dm-types"
@@ -19,11 +18,19 @@ gem "json"
 gem "rack-cache"
 gem "rack-contrib"
 gem "sinatra"
-gem "systemu"
-gem "unicorn"
+gem "i18n"
+gem "sqlite3"
 
 group :production do
-  gem "do_mysql"
+  gem "do_postgres"
+end
+
+group :test do
+  gem "rspec"
+  gem "autotest"
+  gem "autotest-growl"
+  gem "autotest-fsevent"
+  gem "factory_girl"
 end
 
 group :development do

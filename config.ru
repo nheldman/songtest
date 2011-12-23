@@ -1,2 +1,2 @@
-require 'app'
-run ThingResource
+require 'songtest'
+run SongTest
