@@ -54,7 +54,7 @@ class Person
 end
 
 ## set up db
-ENV['RACK_ENV'] = 'test'
+#ENV['RACK_ENV'] = 'test'
 env = ENV["RACK_ENV"]
 puts "RACK_ENV: #{env}"
 if env.to_s.strip == ""
