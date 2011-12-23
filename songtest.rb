@@ -53,25 +53,6 @@ class Person
   #end
 end
 
-## set up db
-env = ENV["RACK_ENV"]
-puts "RACK_ENV: #{env}"
-if env.to_s.strip == ""
-  abort "Must define RACK_ENV (used for db name)"
-end
-
-case env
-when "test"
-  DataMapper.setup(:default, "sqlite3::memory:")
-when "production"
-  DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite3://#{ENV["RACK_ENV"]}.db")
-else
-  DataMapper.setup(:default, "sqlite3:#{ENV["RACK_ENV"]}.db")
-end
-
-## create schema if necessary
-DataMapper.auto_upgrade!
-
 ## logger
 def logger
   @logger ||= Logger.new(STDOUT)
@@ -246,5 +227,10 @@ class SongTest < Sinatra::Base
   end
 
   # start the server if ruby file executed directly
-  run! if app_file == $0
+  if app_file == $0
+    set :environment, :development
+    DataMapper.setup(:default, "sqlite3:development.db")
+    DataMapper.auto_upgrade!
+    run!
+  end
 end

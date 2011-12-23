@@ -3,6 +3,16 @@ require 'rack/test'
 require 'factory_girl'
 require 'factories'
 
+# Set test environment
+Sinatra::Base.set :environment, :test
+Sinatra::Base.set :run, false
+Sinatra::Base.set :raise_errors, true
+Sinatra::Base.set :logging, false
+
+# Establish in-memory database for testing
+DataMapper.setup(:default, "sqlite3::memory:")
+DataMapper.auto_upgrade!
+
 RSpec.configure do |config|
   config.before(:each) do
     repository(:default) do
