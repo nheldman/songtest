@@ -64,7 +64,7 @@ case env
 when "test"
   DataMapper.setup(:default, "sqlite3::memory:")
 when "production"
-  DataMapper.setup(:default, "postgres://localhost/songtest")
+  DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite3://#{ENV["RACK_ENV"]}.db")
 else
   DataMapper.setup(:default, "sqlite3:#{ENV["RACK_ENV"]}.db")
 end
