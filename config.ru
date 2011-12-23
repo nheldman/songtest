@@ -1,2 +1,4 @@
-require 'songtest'
+require 'rubygems'
+require './songtest'
+
 run SongTest
