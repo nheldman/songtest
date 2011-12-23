@@ -54,7 +54,6 @@ class Person
 end
 
 ## set up db
-#ENV['RACK_ENV'] = 'test'
 env = ENV["RACK_ENV"]
 puts "RACK_ENV: #{env}"
 if env.to_s.strip == ""
@@ -64,6 +63,8 @@ end
 case env
 when "test"
   DataMapper.setup(:default, "sqlite3::memory:")
+when "production"
+  DataMapper.setup(:default, "postgres://localhost/songtest")
 else
   DataMapper.setup(:default, "sqlite3:#{ENV["RACK_ENV"]}.db")
 end
