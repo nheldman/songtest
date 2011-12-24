@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../songtest.rb'
+require File.dirname(__FILE__) + '/../app'
 require 'rack/test'
 require 'factory_girl'
 require 'factories'

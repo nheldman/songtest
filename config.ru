@@ -1,5 +1,5 @@
 require 'rubygems'
-require './songtest'
+require './app'
 
 Sinatra::Base.set :run, false
 Sinatra::Base.set :environment, :production
