@@ -7,7 +7,7 @@ class Person
 
   property :first_name, String, :required => true
   property :last_name, String, :required => true
-  property :email, String, :required => true
+  property :email, String, :required => true, :format => :email_address, :unique => true
   
   #def to_json(*a)
   #  {

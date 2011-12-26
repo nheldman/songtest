@@ -1,5 +1,5 @@
 class SongTest < Sinatra::Base
-    
+  
   ## GET /person/:id - return person with specified id
   get '/person/:id', :provides => :json do
     content_type :json
@@ -38,7 +38,7 @@ class SongTest < Sinatra::Base
     end
   end
 
-  ## PUT /person/:id/:email - change a person's email
+  ## PUT /person/:id/email/:email - change a person's email
   put_or_post '/person/:id/email/:email', :provides => :json do
     content_type :json
 
@@ -62,11 +62,9 @@ class SongTest < Sinatra::Base
   put '/person/:id', :provides => :json do
     content_type :json
 
-    new_params = accept_params(params, :first_name, :last_name, :email)
-
     if Person.valid_id?(params[:id])
       if person = Person.first_or_create(:id => params[:id].to_i)
-        person.attributes = person.attributes.merge(new_params)
+        person.attributes = person.attributes.merge(params)
         if person.save
           person.to_json
         else

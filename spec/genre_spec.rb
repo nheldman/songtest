@@ -43,6 +43,7 @@ describe "SongTest Genre" do
     
     it "with genres in database should return 200 and correct number of genres" do
       post '/genre', @genre.to_json
+      @genre[:code] = 'new'
       post '/genre', @genre.to_json
       
       get '/genre'
@@ -70,4 +71,6 @@ describe "SongTest Genre" do
       result['id'].should == 1
     end
   end
+  
+  # TODO: Test post for duplicate code, test put for update, test delete
 end
