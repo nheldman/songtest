@@ -105,8 +105,8 @@ describe "SongTest Person" do
     
     it "with valid id should return 200 and updated record" do
       post '/person', @person.to_json
-      @person[:first_name] = 'new'
       
+      @person[:first_name] = 'new'
       put '/person/1', @person.to_json
       
       last_response.status.should == 200

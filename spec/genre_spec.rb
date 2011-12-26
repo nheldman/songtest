@@ -15,6 +15,13 @@ describe "SongTest Genre" do
 
       last_response.body.should == validation_error(:code, 400, 'Code must not be blank')
     end
+    
+    it "with duplicate code should return 400" do
+      post '/genre', @genre.to_json
+      post '/genre', @genre.to_json
+      
+      last_response.status.should == 400
+    end
 
     it "without name should return 400" do
       @genre[:name] = nil
@@ -72,5 +79,38 @@ describe "SongTest Genre" do
     end
   end
   
-  # TODO: Test post for duplicate code, test put for update, test delete
+  describe "PUT '/genre/:id'" do
+    it "with invalid id should return 404" do
+      put '/genre/1', @genre.to_json
+      
+      last_response.status.should == 400
+    end
+    
+    it "with valid id should return 200 and updated record" do
+      post '/genre', @genre.to_json
+      
+      @genre[:name] = 'new'
+      put '/genre/1', @genre.to_json
+      
+      last_response.status.should == 200
+      result = JSON.parse(last_response.body)
+      result['name'].should == 'new'
+    end
+  end
+  
+  describe "DELETE '/genre' by id" do
+    it "with invalid id should return 404" do
+      delete '/genre/1'
+      
+      last_response.status.should == 404
+    end
+    
+    it "with valid id should return 204" do
+      post '/genre', @genre.to_json
+      
+      delete '/genre/1'
+      
+      last_response.status.should == 204
+    end
+  end
 end
