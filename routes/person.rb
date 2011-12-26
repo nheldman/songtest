@@ -1,6 +1,5 @@
 class SongTest < Sinatra::Base
-  ############################ PERSON ##########################
-  
+    
   ## GET /person/:id - return person with specified id
   get '/person/:id', :provides => :json do
     content_type :json

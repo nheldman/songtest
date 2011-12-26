@@ -63,7 +63,7 @@ describe "SongTest Person" do
   
   describe "GET '/person' by id" do
     it "with invalid id should return 404" do
-      get '/person/1000'
+      get '/person/1'
       
       last_response.status.should == 404    
     end
@@ -76,6 +76,22 @@ describe "SongTest Person" do
       last_response.status.should == 200
       result = JSON.parse(last_response.body)
       result['id'].should == 1
+    end
+  end
+  
+  describe "DELETE '/person' by id" do
+    it "with invalid id should return 404" do
+      delete '/person/1'
+      
+      last_response.status.should == 404
+    end
+    
+    it "with valid id should return 204" do
+      post '/person', @person.to_json
+      
+      delete '/person/1'
+      
+      last_response.status.should == 204
     end
   end
   
