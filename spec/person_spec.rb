@@ -36,14 +36,14 @@ describe "SongTest Person" do
       @person[:email] = 'invalid_email'
       post '/person', @person.to_json
       
-      last_response.body.should == validation_error(:email, 400, 'Email is already taken')
+      last_response.body.should == validation_error(:email, 400, 'Email has an invalid format')
     end
     
     it "with duplicate email should return 400" do
       post '/person', @person.to_json
       post '/person', @person.to_json
       
-      last_response.status.should == 400
+      last_response.body.should == validation_error(:email, 400, 'Email is already taken')
     end
     
     it "with valid person should return 201 and correct id" do      
