@@ -61,21 +61,29 @@ describe "SongTest Genre" do
     end
   end
   
-  describe "GET '/genre' by id" do
-    it "with invalid id should return 404" do
-      get '/genre/1000'
+  describe "GET '/genre' by code" do
+    it "with nonexistent code should return 404" do
+      get '/genre/nonexistent'
       
-      last_response.status.should == 404    
+      last_response.status.should == 404
     end
     
-    it "with valid id should return 200 and correct id" do
+    it "with valid code should return 200 and correct name" do
       post '/genre', @genre.to_json
       
-      get '/genre/1'
+      get '/genre/pop'
       
       last_response.status.should == 200
       result = JSON.parse(last_response.body)
-      result['id'].should == 1
+      result['name'].should == 'Pop'
+    end
+  end
+  
+  describe "GET '/genre' by id" do
+    it "with int should return 400" do
+      get '/genre/1'
+      
+      last_response.status.should == 400    
     end
   end
   

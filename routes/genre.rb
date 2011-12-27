@@ -12,20 +12,19 @@ class SongTest < Sinatra::Base
     end
   end
 
-  ## GET /genre/:id - return genre with specified id
-  get '/genre/:id', :provides => :json do
+  ## GET /genre/:code - return genre with specified code
+  get '/genre/:code', :provides => :json do
     content_type :json
 
-    # check that :id param is an integer
-    if Genre.valid_id?(params[:id])
-      if genre = Genre.first(:id => params[:id].to_i)
+    # check that :code param is a string
+    if Genre.valid_code?(params[:code])
+      if genre = Genre.first(:code => params[:code])
         genre.to_json
       else
         json_status 404, "Not found"
       end
     else
-      # TODO: find better error for this (id not an integer)
-      json_status 404, "Not found"
+      json_status 400, "Genre lookup must be by code, not id"
     end
   end
   
