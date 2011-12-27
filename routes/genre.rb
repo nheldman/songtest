@@ -46,14 +46,15 @@ class SongTest < Sinatra::Base
     end
   end
   
-  ## PUT /genre/:id - change or create a person
+  ## PUT /genre/:id - change or create a genre
   put '/genre/:id', :provides => :json do
     content_type :json
 
     if Genre.valid_id?(params[:id])
       if genre = Genre.first_or_create(:id => params[:id].to_i)
-        genre.attributes = genre.attributes.merge(params)
+        json = JSON.parse(request.body.read.to_s)
         if genre.save
+          genre.update(json)
           genre.to_json
         else
           json_status 400, genre.errors.to_hash

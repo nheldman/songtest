@@ -21,10 +21,6 @@ class SongTest < Sinatra::Base
   post '/person/?', :provides => :json do
     content_type :json
 
-    # Use this code to choose which parameters to grab
-    #new_params = accept_params(params, :first_name, :last_name, :email)
-    #person = Person.new(new_params)
-    
     json = JSON.parse(request.body.read.to_s)
     
     person = Person.new(json)
@@ -64,8 +60,10 @@ class SongTest < Sinatra::Base
 
     if Person.valid_id?(params[:id])
       if person = Person.first_or_create(:id => params[:id].to_i)
-        person.attributes = person.attributes.merge(params)
+        json = JSON.parse(request.body.read.to_s)
+        #person = person.update(json)
         if person.save
+          person.update(json)
           person.to_json
         else
           json_status 400, person.errors.to_hash

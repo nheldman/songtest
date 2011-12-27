@@ -4,7 +4,7 @@
 ## requires
 require 'sinatra/base'
 require 'json'
-
+    
 ## logger
 def logger
   @logger ||= Logger.new(STDOUT)
