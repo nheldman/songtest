@@ -36,7 +36,7 @@ class SongTest < Sinatra::Base
     
     genre = Genre.new(json)
     if genre.save
-      headers["Location"] = "/genre/#{genre.id}"
+      headers["Location"] = "/genre/#{genre.code}"
       # http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.5
       status 201 # Created
       genre.to_json
@@ -45,12 +45,12 @@ class SongTest < Sinatra::Base
     end
   end
   
-  ## PUT /genre/:id - change or create a genre
-  put '/genre/:id', :provides => :json do
+  ## PUT /genre/:code - change or create a genre
+  put '/genre/:code', :provides => :json do
     content_type :json
 
-    if Genre.valid_id?(params[:id])
-      if genre = Genre.first_or_create(:id => params[:id].to_i)
+    if Genre.valid_code?(params[:code])
+      if genre = Genre.first_or_create(:code => params[:code])
         json = JSON.parse(request.body.read.to_s)
         if genre.save
           genre.update(json)
@@ -62,15 +62,19 @@ class SongTest < Sinatra::Base
         json_status 404, "Not found"
       end
     else
-      json_status 404, "Not found"
+      json_status 400, "Update genres by code, not by id"
     end
   end
 
-  ## DELETE /genre/:id - delete a specific genre
-  delete '/genre/:id/?', :provides => :json do
+  ## DELETE /genre/:code - delete a specific genre
+  delete '/genre/:code/?', :provides => :json do
     content_type :json
-
-    if genre = Genre.first(:id => params[:id].to_i)
+    
+    if !Genre.valid_code?(params[:code])
+      return json_status 400, "Delete genres by code, not by id"
+    end
+    
+    if genre = Genre.first(:code => params[:code])
       genre.destroy!
       # http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.7
       status 204 # No content

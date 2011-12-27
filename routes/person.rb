@@ -12,8 +12,7 @@ class SongTest < Sinatra::Base
         json_status 404, "Not found"
       end
     else
-      # TODO: find better error for this (id not an integer)
-      json_status 404, "Not found"
+      json_status 400, "Id parameter must be an integer"
     end
   end
 

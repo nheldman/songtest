@@ -87,18 +87,18 @@ describe "SongTest Genre" do
     end
   end
   
-  describe "PUT '/genre/:id'" do
-    it "with invalid id should return 404" do
+  describe "PUT '/genre/:code'" do
+    it "with id instead of code should return 400" do
       put '/genre/1', @genre.to_json
       
       last_response.status.should == 400
     end
     
-    it "with valid id should return 200 and updated record" do
+    it "with valid code should return 200 and updated record" do
       post '/genre', @genre.to_json
       
       @genre[:name] = 'new'
-      put '/genre/1', @genre.to_json
+      put '/genre/pop', @genre.to_json
       
       last_response.status.should == 200
       result = JSON.parse(last_response.body)
@@ -106,17 +106,17 @@ describe "SongTest Genre" do
     end
   end
   
-  describe "DELETE '/genre' by id" do
-    it "with invalid id should return 404" do
+  describe "DELETE '/genre' by code" do
+    it "with id instead of code should return 400" do
       delete '/genre/1'
       
-      last_response.status.should == 404
+      last_response.status.should == 400
     end
     
-    it "with valid id should return 204" do
+    it "with valid code should return 204" do
       post '/genre', @genre.to_json
       
-      delete '/genre/1'
+      delete '/genre/pop'
       
       last_response.status.should == 204
     end
