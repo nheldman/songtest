@@ -1,5 +1,6 @@
 .bundle
 db/*.sqlite3*
+production.db
 log/*.log
 *.log
 *.lock

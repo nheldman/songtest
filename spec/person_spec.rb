@@ -36,7 +36,7 @@ describe "SongTest Person" do
       @person[:email] = 'invalid_email'
       post '/person', @person.to_json
       
-      last_response.status.should == 400
+      last_response.body.should == validation_error(:email, 400, 'Email is already taken')
     end
     
     it "with duplicate email should return 400" do
