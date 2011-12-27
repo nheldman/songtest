@@ -11,6 +11,7 @@ Sinatra::Base.set :logging, false
 
 # Establish in-memory database for testing
 DataMapper.setup(:default, "sqlite3::memory:")
+DataMapper.finalize
 DataMapper.auto_upgrade!
 
 RSpec.configure do |config|

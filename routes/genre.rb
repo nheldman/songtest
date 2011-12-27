@@ -1,7 +1,6 @@
 class SongTest < Sinatra::Base
-  ############################ GENRE ############################
-  
-  ## get /genre - return all genres
+
+  ## GET /genre - return all genres
   get '/genre/?', :provides => :json do
     content_type :json
     
@@ -12,19 +11,19 @@ class SongTest < Sinatra::Base
     end
   end
 
-  ## GET /genre/:code - return genre with specified code
-  get '/genre/:code', :provides => :json do
+  ## GET /genre/:id - return genre with specified id
+  get '/genre/:id', :provides => :json do
     content_type :json
 
-    # check that :code param is a string
-    if Genre.valid_code?(params[:code])
-      if genre = Genre.first(:code => params[:code])
+    # check that :id param is a string
+    if Genre.valid_genre?(params[:id])
+      if genre = Genre.first(:id => params[:id])
         genre.to_json
       else
         json_status 404, "Not found"
       end
     else
-      json_status 400, "Genre lookup must be by code, not id"
+      json_status 400, "Genre lookup must be by genre string id, not by integer id"
     end
   end
   
@@ -36,7 +35,7 @@ class SongTest < Sinatra::Base
     
     genre = Genre.new(json)
     if genre.save
-      headers["Location"] = "/genre/#{genre.code}"
+      headers["Location"] = "/genre/#{genre.id}"
       # http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.5
       status 201 # Created
       genre.to_json
@@ -45,12 +44,12 @@ class SongTest < Sinatra::Base
     end
   end
   
-  ## PUT /genre/:code - change or create a genre
-  put '/genre/:code', :provides => :json do
+  ## PUT /genre/:id - change or create a genre
+  put '/genre/:id', :provides => :json do
     content_type :json
 
-    if Genre.valid_code?(params[:code])
-      if genre = Genre.first_or_create(:code => params[:code])
+    if Genre.valid_genre?(params[:id])
+      if genre = Genre.first_or_create(:id => params[:id])
         json = JSON.parse(request.body.read.to_s)
         if genre.save
           genre.update(json)
@@ -62,19 +61,19 @@ class SongTest < Sinatra::Base
         json_status 404, "Not found"
       end
     else
-      json_status 400, "Update genres by code, not by id"
+      json_status 400, "Update genres by genre string id, not by integer id"
     end
   end
 
-  ## DELETE /genre/:code - delete a specific genre
-  delete '/genre/:code/?', :provides => :json do
+  ## DELETE /genre/:id - delete a specific genre
+  delete '/genre/:id/?', :provides => :json do
     content_type :json
     
-    if !Genre.valid_code?(params[:code])
-      return json_status 400, "Delete genres by code, not by id"
+    if !Genre.valid_genre?(params[:id])
+      return json_status 400, "Delete genres by genre string id, not by integer id"
     end
     
-    if genre = Genre.first(:code => params[:code])
+    if genre = Genre.first(:id => params[:id])
       genre.destroy!
       # http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.7
       status 204 # No content

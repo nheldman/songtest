@@ -2,9 +2,15 @@
 ### Genre
 class Genre
   include DataMapper::Resource
-  include StandardProperties
   extend Validations
 
-  property :code, String, :required => true, :unique => true
-  property :name, String, :required => true
+  property :id, String, :required => true, :length => 16, :key => true, :unique => true
+  property :name, String, :required => true, :length => 50
+  property :created_at, DateTime
+  property :updated_at, DateTime
+  
+  has n, :songs
+    #:model => 'Song',
+    #:parent_key => [ :code ],
+    #:child_key => [ :genre_code ]
 end

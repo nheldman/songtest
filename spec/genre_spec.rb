@@ -8,19 +8,19 @@ describe "SongTest Genre" do
   end
   
   describe "POST '/genre'" do  
-    it "without code should return 400" do
-      @genre[:code] = nil
+    it "without id should return 400" do
+      @genre[:id] = nil
 
       post '/genre', @genre.to_json
 
-      last_response.body.should == validation_error(:code, 400, 'Code must not be blank')
+      last_response.body.should == validation_error(:id, 400, 'Id must not be blank')
     end
     
-    it "with duplicate code should return 400" do
+    it "with duplicate id should return 400" do
       post '/genre', @genre.to_json
       post '/genre', @genre.to_json
       
-      last_response.status.should == 400
+      last_response.body.should == validation_error(:id, 400, 'Id is already taken')
     end
 
     it "without name should return 400" do
@@ -36,7 +36,7 @@ describe "SongTest Genre" do
       
       last_response.status.should == 201
       result = JSON.parse(last_response.body)
-      result['id'].should == 1
+      result['id'].should == 'electronica'
     end
   end
   
@@ -50,7 +50,7 @@ describe "SongTest Genre" do
     
     it "with genres in database should return 200 and correct number of genres" do
       post '/genre', @genre.to_json
-      @genre[:code] = 'new'
+      @genre[:id] = 'new'
       post '/genre', @genre.to_json
       
       get '/genre'
@@ -61,34 +61,34 @@ describe "SongTest Genre" do
     end
   end
   
-  describe "GET '/genre' by code" do
-    it "with nonexistent code should return 404" do
+  describe "GET '/genre' by id" do
+    it "with nonexistent id should return 404" do
       get '/genre/nonexistent'
       
       last_response.status.should == 404
     end
     
-    it "with valid code should return 200 and correct name" do
+    it "with valid id should return 200 and correct name" do
       post '/genre', @genre.to_json
       
-      get '/genre/pop'
+      get '/genre/electronica'
       
       last_response.status.should == 200
       result = JSON.parse(last_response.body)
-      result['name'].should == 'Pop'
+      result['name'].should == 'Electronica'
     end
   end
   
   describe "GET '/genre' by id" do
-    it "with int should return 400" do
+    it "with integer should return 400" do
       get '/genre/1'
       
       last_response.status.should == 400    
     end
   end
   
-  describe "PUT '/genre/:code'" do
-    it "with id instead of code should return 400" do
+  describe "PUT '/genre/:id'" do
+    it "with integer instead of string should return 400" do
       put '/genre/1', @genre.to_json
       
       last_response.status.should == 400
@@ -98,7 +98,7 @@ describe "SongTest Genre" do
       post '/genre', @genre.to_json
       
       @genre[:name] = 'new'
-      put '/genre/pop', @genre.to_json
+      put '/genre/electronica', @genre.to_json
       
       last_response.status.should == 200
       result = JSON.parse(last_response.body)
@@ -106,17 +106,17 @@ describe "SongTest Genre" do
     end
   end
   
-  describe "DELETE '/genre' by code" do
-    it "with id instead of code should return 400" do
+  describe "DELETE '/genre' by id" do
+    it "with integer instead of string should return 400" do
       delete '/genre/1'
       
       last_response.status.should == 400
     end
     
-    it "with valid code should return 204" do
+    it "with valid id should return 204" do
       post '/genre', @genre.to_json
       
-      delete '/genre/pop'
+      delete '/genre/electronica'
       
       last_response.status.should == 204
     end

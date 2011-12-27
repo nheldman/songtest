@@ -1,5 +1,16 @@
 class SongTest < Sinatra::Base
   
+  ## GET /person - return all people
+  get '/person/?', :provides => :json do
+    content_type :json
+    
+    if people = Person.all
+      people.to_json
+    else
+      json_status 404, "Not found"
+    end
+  end
+  
   ## GET /person/:id - return person with specified id
   get '/person/:id', :provides => :json do
     content_type :json

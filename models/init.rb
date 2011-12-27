@@ -23,12 +23,13 @@ module Validations
     id && id.to_s =~ /^\d+$/
   end
   
-  def valid_code?(code)
-    code && code.to_s =~ /^[A-Za-z]+$/
+  def valid_genre?(id)
+    id && id.to_s =~ /^[A-Za-z]+$/
   end
 end
 
 # These requires must be at the bottom of the file
 require_relative 'person'
 require_relative 'genre'
+require_relative 'song'
 
