@@ -13,9 +13,5 @@ class Song
   property :genre_id,       String,  :required => true, :length => 16
   
   belongs_to :person
-  
   belongs_to :genre
-    #:model => 'Genre',
-    #:child_key => [ :genre_code ],
-    #:parent_key => [ :code ]
 end

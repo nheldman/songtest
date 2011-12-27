@@ -10,7 +10,4 @@ class Genre
   property :updated_at, DateTime
   
   has n, :songs
-    #:model => 'Song',
-    #:parent_key => [ :code ],
-    #:child_key => [ :genre_code ]
 end
