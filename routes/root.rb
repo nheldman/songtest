@@ -4,7 +4,8 @@ class SongTest < Sinatra::Base
   
   ## get / - return 'SongTest' as string
   get '/' do
-    'SongTest'
+    @title = 'SongTest'
+    haml :root, :layout => :layout
   end
   
   ## get /person - return all people

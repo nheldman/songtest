@@ -4,6 +4,7 @@
 ## requires
 require 'sinatra/base'
 require 'json'
+require 'haml'
     
 ## logger
 def logger

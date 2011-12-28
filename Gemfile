@@ -20,6 +20,7 @@ gem "rack-contrib"
 gem "sinatra"
 gem "i18n"
 gem "sqlite3"
+gem "haml"
 
 group :production do
   gem "do_postgres"
