@@ -2,7 +2,7 @@ require 'rubygems'
 require './app'
 
 Sinatra::Base.set :run, false
-Sinatra::Base.set :environment, :production
+Sinatra::Base.set :environment, :development
 
 DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite3:production.db")
 DataMapper.finalize

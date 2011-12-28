@@ -102,6 +102,42 @@ describe "SongTest song" do
     end
   end
   
+  describe "Random id" do
+    it "should be 12 alphanumeric characters" do
+      random_id = Song.random_id
+      
+      random_id.should =~ /^[a-z0-9]{12}$/ 
+    end
+  end
+  
+  describe "POST '/song/random'" do
+    it "should redirect to a one-time random id" do
+      # make sure we have a song in the database
+      post '/song', @song.to_json
+      
+      post '/song/random'
+      
+      follow_redirect!
+      
+      last_request.url.should =~ /\/song\/[a-z0-9]{12}$/
+    end
+    
+    it "should add a song_vote for the current user and song" do
+      # make sure we have a song in the database
+      post '/song', @song.to_json
+      
+      post '/song/random'
+      follow_redirect!
+      
+      random_id = last_request.url[-12,12]
+      song_vote = SongVote.first(:random_id => random_id)
+      
+      song_vote['song_id'].should == 1
+      # TODO: Validate that the person_id in song_vote is correct
+      song_vote['person_id'].should == 1
+    end
+  end
+  
   describe "PUT '/song/:id'" do
     it "with invalid id should return 404" do
       put '/song/1', @song.to_json

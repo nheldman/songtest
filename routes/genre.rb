@@ -1,7 +1,7 @@
 class SongTest < Sinatra::Base
 
   ## GET /genre - return all genres
-  get '/genre/?', :provides => :json do
+  get '/genre', :provides => :json do
     content_type :json
     
     if genres = Genre.all

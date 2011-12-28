@@ -10,4 +10,6 @@ class Person
   property :email,      String, :required => true, :length => 100, :format => :email_address, :unique => true
   
   has n, :songs
+  has n, :votes
+  has n, :song_votes
 end

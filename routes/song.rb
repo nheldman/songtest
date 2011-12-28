@@ -1,7 +1,7 @@
 class SongTest < Sinatra::Base
   
   ## GET /song - return all songs
-  get '/song/?', :provides => :json do
+  get '/song', :provides => :json do
     content_type :json
     
     if songs = Song.all
@@ -9,6 +9,35 @@ class SongTest < Sinatra::Base
     else
       json_status 404, "Not found"
     end
+  end
+  
+  ## POST /song/random - return a random song (that has not yet been voted for) with one-time-use random id
+  post '/song/random', :provides => :json do    
+    # TODO: Check that the current user and person_id match
+    person_id = Person.first.id
+    
+    random_id = Song.random_id
+    
+    # TODO: Get a song from the database that has not yet been voted for, or has been voted for the fewest
+    song = Song.first
+    
+    # TODO: Associate this random id with the current user and song
+    song_vote = SongVote.new(:song_id => song.id, :random_id => random_id, :person_id => person_id)
+    if song_vote.save
+      redirect "/song/#{random_id}"
+    else
+      json_status 400, "Unable to save song_vote"
+    end
+  end
+  
+  ## GET /song/<random_id> - redirect from /song/random
+  get %r{/song/([a-z0-9]{12})} do
+    vote_id = params[:captures].first
+    
+    # TODO: Lookup the song
+    song = Song.first
+    
+    song.to_json
   end
   
   ## GET /song/:id - return song with specified id

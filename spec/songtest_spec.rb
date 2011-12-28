@@ -11,7 +11,7 @@ describe "SongTest Home" do
 
     it "should contain 'SongTest'" do
       get '/'
-      last_response.body.should == 'SongTest'
+      last_response.body.should =~ /SongTest/
     end
   end
 end

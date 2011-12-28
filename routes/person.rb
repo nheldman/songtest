@@ -1,7 +1,7 @@
 class SongTest < Sinatra::Base
   
   ## GET /person - return all people
-  get '/person/?', :provides => :json do
+  get '/person', :provides => :json do
     content_type :json
     
     if people = Person.all
