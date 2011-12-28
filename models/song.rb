@@ -28,8 +28,8 @@ class Song
     # and has the fewest total votes
     
     # First, see if there are any songs with no votes.  If so, grab the first one.
-    # TODO: Add an order_by created date here
-    if first_song_with_no_votes = Song.first(:votes => nil)
+    # TODO: Don't include songs submitted by the current person_id
+    if first_song_with_no_votes = Song.first(:votes => nil, :order => [ :created_at.asc ])
       first_song_with_no_votes
     else
       Song.first(Song.votes.person_id.not => person_id, :order => [ :vote_count.asc ])
