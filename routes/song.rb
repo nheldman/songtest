@@ -18,25 +18,28 @@ class SongTest < Sinatra::Base
     
     random_id = Song.random_id
     
-    # TODO: Get a song from the database that has not yet been voted for, or has been voted for the fewest
-    song = Song.first
+    song = Song.no_votes_by_person_id_and_fewest_total_votes(person_id)
     
-    # TODO: Associate this random id with the current user and song
-    song_vote = SongVote.new(:song_id => song.id, :random_id => random_id, :person_id => person_id)
-    if song_vote.save
+    vote = Vote.new(:song_id => song.id, :random_id => random_id, :person_id => person_id)
+    if vote.save
       redirect "/song/#{random_id}"
     else
-      json_status 400, "Unable to save song_vote"
+      json_status 400, vote.errors.to_hash
     end
   end
   
   ## GET /song/<random_id> - redirect from /song/random
   get %r{/song/([a-z0-9]{12})} do
-    vote_id = params[:captures].first
+    random_id = params[:captures].first
     
-    # TODO: Lookup the song
-    song = Song.first
+    vote = Vote.first(:random_id => random_id)
     
+    if !vote
+      return json_status 400, "#{random_id} is not a valid song id"
+    end
+    
+    # TODO: If song.person_id !== current user id, return 400
+    song = Song.get(:id => vote.song_id)
     song.to_json
   end
   

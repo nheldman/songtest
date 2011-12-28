@@ -102,6 +102,40 @@ describe "SongTest song" do
     end
   end
   
+  describe "Find votable song" do
+    it "should not have any votes" do
+      # Add two songs
+      post '/song', @song.to_json
+      post '/song', @song.to_json
+      
+      # Vote for one of them as the current user
+      person_id = 1
+      
+      # TODO: Use the API instead, or is this better because it is more like a mock?
+      # Don't provide a rating here, we're just getting a vote placeholder
+      vote = Vote.create(:person_id => person_id, :song_id => 1, :random_id => '1234567890ab')
+      
+      song = Song.no_votes_by_person_id_and_fewest_total_votes(person_id)
+      
+      song[:id].should == 2
+    end
+    
+    it "should have the fewest votes" do
+      # Add two songs
+      post '/song', @song.to_json
+      post '/song', @song.to_json
+      
+      # Vote for the first one twice, and the second one once
+      Vote.create(:person_id => 2, :song_id => 1, :random_id => '1234567890ab')
+      Vote.create(:person_id => 3, :song_id => 1, :random_id => '1234567890ac')
+      Vote.create(:person_id => 4, :song_id => 2, :random_id => '1234567890ad')
+      
+      song = Song.no_votes_by_person_id_and_fewest_total_votes(1) # 1 == person_id of current user
+      
+      song[:id].should == 2
+    end
+  end
+  
   describe "Random id" do
     it "should be 12 alphanumeric characters" do
       random_id = Song.random_id
@@ -130,11 +164,11 @@ describe "SongTest song" do
       follow_redirect!
       
       random_id = last_request.url[-12,12]
-      song_vote = SongVote.first(:random_id => random_id)
+      vote = Vote.first(:random_id => random_id)
       
-      song_vote['song_id'].should == 1
+      vote['song_id'].should == 1
       # TODO: Validate that the person_id in song_vote is correct
-      song_vote['person_id'].should == 1
+      vote['person_id'].should == 1
     end
   end
   

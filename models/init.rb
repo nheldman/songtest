@@ -33,5 +33,4 @@ require_relative 'person'
 require_relative 'genre'
 require_relative 'song'
 require_relative 'vote'
-require_relative 'song_vote'
 

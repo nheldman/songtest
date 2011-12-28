@@ -11,9 +11,9 @@ class Song
   property :soundcloud_url, String,  :required => true, :length => 1024
   property :lyrics,         String,                     :length => 1024
   property :genre_id,       String,  :required => true, :length => 16
+  property :vote_count,     Integer, :required => true, :default => 0
   
   has n, :votes
-  has n, :song_votes
   
   belongs_to :person
   belongs_to :genre
@@ -21,6 +21,18 @@ class Song
   def self.random_id
     chars =  [('a'..'z'),(0..9)].map{|i| i.to_a}.flatten;  
     random_id = (0..11).map{ chars[rand(chars.length)] }.join;
-    random_id
+  end
+  
+  def self.no_votes_by_person_id_and_fewest_total_votes(person_id)
+    # Get a song from the database that has not yet been voted for by this person,
+    # and has the fewest total votes
+    
+    # First, see if there are any songs with no votes.  If so, grab the first one.
+    # TODO: Add an order_by created date here
+    if first_song_with_no_votes = Song.first(:votes => nil)
+      first_song_with_no_votes
+    else
+      Song.first(Song.votes.person_id.not => person_id, :order => [ :vote_count.asc ])
+    end
   end
 end

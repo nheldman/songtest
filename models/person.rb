@@ -11,5 +11,4 @@ class Person
   
   has n, :songs
   has n, :votes
-  has n, :song_votes
 end
