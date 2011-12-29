@@ -17,3 +17,9 @@ Factory.define :song do |s|
   s.lyrics 'Green to this, where\'s a manual when you need one?'
   s.genre_id 'electronica'
 end
+
+Factory.define :vote do |v|
+  v.person_id 1
+  v.song_id 1
+  v.random_id '000000000000'
+end

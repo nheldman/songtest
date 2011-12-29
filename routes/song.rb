@@ -99,7 +99,7 @@ class SongTest < Sinatra::Base
   end
 
   ## DELETE /song/:id - delete a specific song
-  delete '/song/:id/?', :provides => :json do
+  delete '/song/:id', :provides => :json do
     content_type :json
 
     if song = Song.first(:id => params[:id].to_i)

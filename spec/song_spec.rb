@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "SongTest song" do
+describe "SongTest Song" do
   include Rack::Test::Methods
 
   before(:each) do

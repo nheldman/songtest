@@ -66,7 +66,7 @@ class SongTest < Sinatra::Base
   end
 
   ## DELETE /genre/:id - delete a specific genre
-  delete '/genre/:id/?', :provides => :json do
+  delete '/genre/:id', :provides => :json do
     content_type :json
     
     if !Genre.valid_genre?(params[:id])
