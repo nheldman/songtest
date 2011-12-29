@@ -11,4 +11,5 @@ class Person
   
   has n, :songs
   has n, :votes
+  has 1, :company
 end
