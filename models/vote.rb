@@ -14,8 +14,9 @@ class Vote
   property :rating,         Integer, :min => 1, :max => 10
   property :comment,        String,  :length => 1024
   
-  # TODO: This is not working as expected.  Maybe fix?
-  #validates_presence_of :rating, :unless => :new?
+  # TODO: Need to find a way to use this :voting context when updating (could normally
+  # use Vote.save(:voting), but not sure how to use it for update)
+  #validates_presence_of :rating, :when => [ :voting ]
   
   belongs_to :person
   belongs_to :song

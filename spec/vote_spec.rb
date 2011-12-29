@@ -48,6 +48,22 @@ describe "SongTest Vote" do
       last_response.body.should == validation_error(:rating, 400, 'Rating must not be blank')
     end
     
+    it "without rating below 1 should return 400" do
+      @vote[:rating] = 0
+
+      post "/vote/#{@random_id}", @vote.to_json
+
+      last_response.body.should == validation_error(:rating, 400, 'Rating must be greater than or equal to 1')
+    end
+    
+    it "without rating above 10 should return 400" do
+      @vote[:rating] = 11
+
+      post "/vote/#{@random_id}", @vote.to_json
+
+      last_response.body.should == validation_error(:rating, 400, 'Rating must be less than or equal to 10')
+    end
+    
     it "with valid vote should return 201 and correct id" do      
       @vote[:rating] = 5
       post "/vote/#{@random_id}", @vote.to_json
