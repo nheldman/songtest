@@ -23,3 +23,20 @@ Factory.define :vote do |v|
   v.song_id 1
   v.random_id '000000000000'
 end
+
+Factory.define :company do |c|
+  c.person_id 1
+  c.name 'Fairway Technologies'
+  c.url 'http://fairwaytech.com'
+end
+
+Factory.define :prize do |p|
+  p.company_id 1
+  p.name 'Avalon VT-737SP Pure Class A - Direct Signal Path'
+  p.description 'The Avalon VT-737SP features a combination of TUBE preamplifiers, opto-compressor, sweep equalizer, output level and VU metering in a 2U space.'
+end
+
+Factory.define :wish do |p|
+  p.song_id 1
+  p.prize_id 1
+end

@@ -14,7 +14,8 @@ class Song
   property :vote_count,     Integer, :required => true, :default => 0
   
   has n, :votes
-  has 1, :wish
+  has n, :wishes
+  has n, :prizes, :through => :wishes
   
   belongs_to :person
   belongs_to :genre

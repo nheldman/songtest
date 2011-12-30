@@ -2,13 +2,11 @@
 ### Wish
 class Wish
   include DataMapper::Resource
-  include StandardProperties
   extend Validations
-
-  property :song_id,  Integer, :required => true, :key => true
-  property :prize_id, Integer, :required => true, :key => true
   
-  # TODO: Set up the correct association here
-  belongs_to :song
-  belongs_to :prize
+  property :created_at, DateTime
+  property :updated_at, DateTime
+  
+  belongs_to :song,  :key => true
+  belongs_to :prize, :key => true
 end
