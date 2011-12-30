@@ -6,6 +6,14 @@ class SongTest < Sinatra::Base
 
     json = JSON.parse(request.body.read.to_s)
     
+    song_id = json['song_id']
+    prize_id = json['prize_id']
+    
+    # TODO: Do we have to do this lookup, or can a foreign key constraint solve this?
+    if (song_id && !Song.get(song_id)) || (prize_id && !Prize.get(prize_id))
+      return json_status 404, "Not found"
+    end
+    
     wish = Wish.new(json)
     if wish.save
       headers["Location"] = "/wish/#{wish.song_id}/#{wish.prize_id}"

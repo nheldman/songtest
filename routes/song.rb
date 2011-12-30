@@ -60,7 +60,7 @@ class SongTest < Sinatra::Base
   end
 
   ## POST /song/ - create new song
-  post '/song/?', :provides => :json do
+  post '/song', :provides => :json do
     content_type :json
 
     json = JSON.parse(request.body.read.to_s)

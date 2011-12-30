@@ -43,7 +43,7 @@ end
 
 Factory.define :winner do |w|
   w.month '01/2012'
-  w.genre_id 1
+  w.genre_id 'electronica'
   w.song_id 1
   w.votes 1
   w.average 1.0

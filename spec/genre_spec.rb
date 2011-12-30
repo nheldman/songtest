@@ -141,6 +141,9 @@ describe "SongTest Genre" do
     it "with valid genre and winners should return all winners" do
       post '/genre', @genre.to_json
       
+      @person = FactoryGirl.attributes_for(:person)
+      post '/person', @person.to_json
+      
       @song = FactoryGirl.attributes_for(:song)
       post '/song', @song.to_json
       

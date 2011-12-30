@@ -8,7 +8,7 @@ class Winner
   property :song_id,  Integer, :required => true
   property :month,    String,  :required => true
   property :votes,    Integer, :required => true
-  property :genre_id, Integer, :required => true
+  property :genre_id, String,  :required => true
   property :average,  Float,   :required => true, :default => 0.0
   
   belongs_to :song

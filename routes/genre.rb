@@ -10,22 +10,6 @@ class SongTest < Sinatra::Base
       json_status 404, "Not found"
     end
   end
-
-  ## GET /genre/:id - return genre with specified id
-  get '/genre/:id', :provides => :json do
-    content_type :json
-
-    # check that :id param is a string
-    if Genre.valid_genre?(params[:id])
-      if genre = Genre.first(:id => params[:id])
-        genre.to_json
-      else
-        json_status 404, "Not found"
-      end
-    else
-      json_status 400, "Genre lookup must be by genre string id, not by integer id"
-    end
-  end
   
   ## GET /genre/:id/songs - return songs in genre
   get '/genre/:id/songs', :provides => :json do
@@ -47,12 +31,28 @@ class SongTest < Sinatra::Base
   ## GET /genre/:id/winners - return winners in genre
   get '/genre/:id/winners', :provides => :json do
     content_type :json
-
+    
     # check that :id param is a string
     if Genre.valid_genre?(params[:id])
       if genre = Genre.first(:id => params[:id])
         winners = Winner.all(:genre_id => genre.id)
         winners.to_json
+      else
+        json_status 404, "Not found"
+      end
+    else
+      json_status 400, "Genre lookup must be by genre string id, not by integer id"
+    end
+  end
+  
+  ## GET /genre/:id - return genre with specified id
+  get '/genre/:id', :provides => :json do
+    content_type :json
+
+    # check that :id param is a string
+    if Genre.valid_genre?(params[:id])
+      if genre = Genre.first(:id => params[:id])
+        genre.to_json
       else
         json_status 404, "Not found"
       end

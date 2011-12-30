@@ -4,22 +4,18 @@ describe "SongTest Winner" do
   include Rack::Test::Methods
 
   before(:each) do    
-    @person = FactoryGirl.attributes_for(:person)
-    post '/person', @person.to_json
-    
     @genre = FactoryGirl.attributes_for(:genre)
     post '/genre', @genre.to_json
+    
+    @person = FactoryGirl.attributes_for(:person)
+    post '/person', @person.to_json
     
     @song = FactoryGirl.attributes_for(:song)
     post '/song', @song.to_json
     
-    @song[:artist] = 'Randi Driscoll'
-    @song[:title] = 'What Matters'
-    post '/song', @song.to_json
-    
     @winner = FactoryGirl.attributes_for(:winner)
   end
-
+  
   describe "GET '/winner'" do    
     it "with no winners should return 200 and empty array" do
       get '/winner'
@@ -30,6 +26,7 @@ describe "SongTest Winner" do
     
     it "with winners should return all winners" do
       Winner.create(@winner)
+      
       get '/winner'
       
       last_response.status.should == 200

@@ -135,6 +135,10 @@ describe "SongTest Prize" do
     
     it "with wishes should return all wishes" do
       post '/prize', @prize.to_json
+      
+      @song = FactoryGirl.attributes_for(:song)
+      post '/song', @song.to_json
+      
       @wish = FactoryGirl.attributes_for(:wish)
       post '/wish', @wish.to_json
       

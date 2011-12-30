@@ -45,7 +45,7 @@ class SongTest < Sinatra::Base
   end
   
   ## POST /company/ - create new company
-  post '/company/?', :provides => :json do
+  post '/company', :provides => :json do
     content_type :json
 
     json = JSON.parse(request.body.read.to_s)
