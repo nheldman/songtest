@@ -120,6 +120,41 @@ describe "SongTest Genre" do
     end
   end
   
+  describe "GET '/genre/:id/winners'" do
+    it "with invalid genre should return 404" do
+      post '/genre', @genre.to_json
+            
+      get '/genre/nonexistent/winners'
+      
+      last_response.status.should == 404
+    end
+    
+    it "with valid genre and no winners should return 200 and empty array" do
+      post '/genre', @genre.to_json
+
+      get '/genre/electronica/winners'
+      
+      last_response.status.should == 200
+      last_response.body.should == '[]'
+    end
+    
+    it "with valid genre and winners should return all winners" do
+      post '/genre', @genre.to_json
+      
+      @song = FactoryGirl.attributes_for(:song)
+      post '/song', @song.to_json
+      
+      @winner = FactoryGirl.attributes_for(:winner)
+      Winner.create(@winner)
+      
+      get '/genre/electronica/winners'
+      
+      last_response.status.should == 200
+      result = JSON.parse(last_response.body)
+      result.length.should == 1
+    end
+  end
+  
   describe "PUT '/genre/:id'" do
     it "with integer instead of string should return 400" do
       put '/genre/1', @genre.to_json

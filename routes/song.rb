@@ -22,7 +22,7 @@ class SongTest < Sinatra::Base
     
     vote = Vote.new(:song_id => song.id, :random_id => random_id, :person_id => person_id)
     if vote.save
-      redirect "/song/#{random_id}"
+      redirect to "/song/#{random_id}"
     else
       json_status 400, vote.errors.to_hash
     end

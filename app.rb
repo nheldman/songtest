@@ -15,8 +15,8 @@ end
 class SongTest < Sinatra::Base
   set :methodoverride, true
 
-  # TODO: Authorization: this will return 401 for ALL requests
-  #before do
+  # TODO: Authorization: this will return 401 for all person requests
+  #before '/person/*' do  # If you just use "before do", it will be for ALL requests
   #  halt 401, "Not Authorized"
   #end
   
