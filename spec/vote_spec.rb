@@ -18,9 +18,7 @@ describe "SongTest Vote" do
     # Create the placeholder vote
     @random_id = '000000000000'
     @vote = FactoryGirl.attributes_for(:vote)
-    Vote.create(:song_id => @vote[:song_id],
-                :random_id => @vote[:random_id],
-                :person_id => @vote[:person_id])
+    Vote.create(@vote)
   end
   
   describe "POST '/vote/<random id>'" do    

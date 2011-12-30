@@ -26,6 +26,40 @@ class SongTest < Sinatra::Base
       json_status 400, "Id parameter must be an integer"
     end
   end
+  
+  ## GET /person/:id/songs - return songs submitted by person
+  get '/person/:id/songs', :provides => :json do
+      content_type :json
+      
+      # check that :id param is an integer
+      if Person.valid_id?(params[:id])
+        if person = Person.first(:id => params[:id].to_i)
+          songs = Song.all(:person_id => person.id)
+          songs.to_json
+        else
+          json_status 404, "Not found"
+        end
+      else
+        json_status 400, "Id parameter must be an integer"
+      end
+  end
+  
+  ## GET /person/:id/votes - return votes submitted by person
+  get '/person/:id/votes', :provides => :json do
+      content_type :json
+      
+      # check that :id param is an integer
+      if Person.valid_id?(params[:id])
+        if person = Person.first(:id => params[:id].to_i)
+          votes = Vote.all(:person_id => person.id)
+          votes.to_json
+        else
+          json_status 404, "Not found"
+        end
+      else
+        json_status 400, "Id parameter must be an integer"
+      end
+  end
 
   ## POST /person/ - create new person
   post '/person/?', :provides => :json do

@@ -149,4 +149,60 @@ describe "SongTest Person" do
     end
   end
   
+  describe "GET /person/:id/songs" do
+    it "with no matching person id should return 404" do
+      get '/person/1/songs'
+      last_response.status.should == 404
+    end
+    
+    it "with no songs should return 200 and empty array" do
+      post '/person', @person.to_json
+      get '/person/1/songs'
+      last_response.status.should == 200
+      last_response.body.should == '[]'
+    end
+    
+    it "with songs should return all songs" do
+      post '/person', @person.to_json
+      @song = FactoryGirl.attributes_for(:song)
+      post '/song', @song.to_json
+      
+      get '/person/1/songs'
+      last_response.status.should == 200
+      result = JSON.parse(last_response.body)
+      result.length.should == 1
+    end
+  end
+  
+  describe "GET /person/:id/votes" do
+    it "with no matching person id should return 404" do
+      get '/person/1/votes'
+      last_response.status.should == 404
+    end
+    
+    it "with no votes should return 200 and empty array" do
+      post '/person', @person.to_json
+      get '/person/1/votes'
+      last_response.status.should == 200
+      last_response.body.should == '[]'
+    end
+    
+    it "with votes should return all votes" do
+      post '/person', @person.to_json
+      
+      @genre = FactoryGirl.attributes_for(:genre)
+      post '/genre', @genre.to_json
+      
+      @song = FactoryGirl.attributes_for(:song)
+      post '/song', @song.to_json
+      
+      @vote = FactoryGirl.attributes_for(:vote)
+      Vote.create(@vote)
+      
+      get '/person/1/votes'
+      last_response.status.should == 200
+      result = JSON.parse(last_response.body)
+      result.length.should == 1
+    end
+  end
 end
