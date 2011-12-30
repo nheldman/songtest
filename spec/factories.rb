@@ -36,7 +36,15 @@ Factory.define :prize do |p|
   p.description 'The Avalon VT-737SP features a combination of TUBE preamplifiers, opto-compressor, sweep equalizer, output level and VU metering in a 2U space.'
 end
 
-Factory.define :wish do |p|
-  p.song_id 1
-  p.prize_id 1
+Factory.define :wish do |w|
+  w.song_id 1
+  w.prize_id 1
+end
+
+Factory.define :winner do |w|
+  w.month '01/2012'
+  w.genre_id 1
+  w.song_id 1
+  w.votes 1
+  w.average 1.0
 end

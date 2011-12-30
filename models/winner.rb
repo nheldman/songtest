@@ -11,7 +11,6 @@ class Winner
   property :genre_id, Integer, :required => true
   property :average,  Float,   :required => true, :default => 0.0
   
-  # TODO: Set up the correct association here
   belongs_to :song
   belongs_to :genre
 end

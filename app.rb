@@ -15,6 +15,11 @@ end
 class SongTest < Sinatra::Base
   set :methodoverride, true
 
+  # TODO: Authorization: this will return 401 for ALL requests
+  #before do
+  #  halt 401, "Not Authorized"
+  #end
+  
   ## helpers
   def self.put_or_post(*a, &b)
     put *a, &b
