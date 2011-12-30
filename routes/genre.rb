@@ -27,6 +27,23 @@ class SongTest < Sinatra::Base
     end
   end
   
+  ## GET /genre/:id/songs - return songs in genre
+  get '/genre/:id/songs', :provides => :json do
+    content_type :json
+
+    # check that :id param is a string
+    if Genre.valid_genre?(params[:id])
+      if genre = Genre.first(:id => params[:id])
+        songs = Song.all(:genre_id => genre.id)
+        songs.to_json
+      else
+        json_status 404, "Not found"
+      end
+    else
+      json_status 400, "Genre lookup must be by genre string id, not by integer id"
+    end
+  end
+  
   ## POST /genre - create new genre
   post '/genre/?', :provides => :json do
     content_type :json

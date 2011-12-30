@@ -68,6 +68,12 @@ describe "SongTest Genre" do
       last_response.status.should == 404
     end
     
+    it "with integer id should return 400" do
+      get '/genre/1'
+      
+      last_response.status.should == 400    
+    end
+    
     it "with valid id should return 200 and correct name" do
       post '/genre', @genre.to_json
       
@@ -79,11 +85,38 @@ describe "SongTest Genre" do
     end
   end
   
-  describe "GET '/genre' by id" do
-    it "with integer should return 400" do
-      get '/genre/1'
+  describe "GET '/genre/:id/songs'" do
+    it "with invalid genre should return 404" do
+      post '/genre', @genre.to_json
+            
+      get '/genre/nonexistent/songs'
       
-      last_response.status.should == 400    
+      last_response.status.should == 404
+    end
+    
+    it "with valid genre and no songs should return 200 and empty array" do
+      post '/genre', @genre.to_json
+
+      get '/genre/electronica/songs'
+      
+      last_response.status.should == 200
+      last_response.body.should == '[]'
+    end
+    
+    it "with valid genre and songs should return all songs" do
+      post '/genre', @genre.to_json
+      
+      @person = FactoryGirl.attributes_for(:person)
+      post '/person', @person.to_json
+      
+      @song = FactoryGirl.attributes_for(:song)
+      post '/song', @song.to_json
+      
+      get '/genre/electronica/songs'
+      
+      last_response.status.should == 200
+      result = JSON.parse(last_response.body)
+      result.length.should == 1
     end
   end
   
