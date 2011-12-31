@@ -31,8 +31,9 @@ RSpec.configure do |config|
     @person = FactoryGirl.attributes_for(:person)
     @person[:email] = 'noah.heldman@gmail.com'
     person = Person.create(@person)
-    role = Role.create(:name => 'Administrator')
-    person.roles << role
+    admin_role = Role.create(:name => 'Administrator')
+    user_role = Role.create(:name => 'User')
+    person.roles << admin_role << user_role
     person.save
     authorize @person[:email], @person[:password]
   end

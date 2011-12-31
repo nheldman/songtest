@@ -13,17 +13,27 @@ end
 
 ## SongTest application
 class SongTest < Sinatra::Base
+  use Rack::Session::Pool, :expire_after => 2592000
+  
   set :methodoverride, true
   
-  ## helpers
+  #before do  # Run this before ALL requests
+  #  pass if request.path_info == '/'
+  #  pass if request.request_method == "POST" && request.path_info == '/person'
+  #  authenticate_user!
+  #end
+  
+  set(:auth) do |*roles| # <- notice the splat here
+    condition do
+      unless authenticate_user! && roles.any? {|role| session[:user].in_role? role }
+        throw(:halt, json_status(401, "Not Authorized"))
+      end
+    end
+  end
+  
   def self.put_or_post(*a, &b)
     put *a, &b
     post *a, &b
-  end
-  
-  before do  # Run this before ALL requests
-    pass if request.request_method == "POST" && request.path_info == '/person'
-    authenticate_user!
   end
 
   helpers do
@@ -35,6 +45,7 @@ class SongTest < Sinatra::Base
       end
 
       if person && person.password == auth.credentials[1]
+        session[:user] = person
         return true
       else
         response['WWW-Authenticate'] = %(Basic realm="Restricted Area")

@@ -1,7 +1,7 @@
 class SongTest < Sinatra::Base
   
   ## GET /person - return all people
-  get '/person', :provides => :json do
+  get '/person', :auth => [ :Administrator ], :provides => :json do
     content_type :json
     
     if people = Person.all
@@ -12,7 +12,7 @@ class SongTest < Sinatra::Base
   end
   
   ## GET /person/:id - return person with specified id
-  get '/person/:id', :provides => :json do
+  get '/person/:id', :auth => [ :User ], :provides => :json do
     content_type :json
 
     # check that :id param is an integer

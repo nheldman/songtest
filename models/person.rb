@@ -14,4 +14,8 @@ class Person
   has n, :songs
   has n, :votes
   has 1, :company
+  
+  def in_role? (role)
+    roles.any? { |r| r.name.to_sym == role }
+  end
 end
