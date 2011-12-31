@@ -2,6 +2,7 @@ Factory.define :person do |p|
   p.first_name 'Noah'
   p.last_name 'Heldman'
   p.email 'nheldman@fairwaytech.com'
+  p.password 'password'
 end
 
 Factory.define :genre do |g|

@@ -51,36 +51,33 @@ describe "SongTest Person" do
       
       last_response.status.should == 201
       result = JSON.parse(last_response.body)
-      result['id'].should == 1
+      result['id'].should == 2 # Admin user is id 1
     end
   end
   
   describe "GET '/person'" do
-    it "with empty database should return 200 and no people" do
+    it "with only admin user should return 200 and and admin user" do
       get '/person'
       
       last_response.status.should == 200
-      last_response.body.should == '[]'    
+      result = JSON.parse(last_response.body)
+      result.length.should == 1 # Admin user already in db  
     end
     
     it "with people in database should return 200 and correct number of people" do
-      post '/person', @person.to_json
-      @person[:email] = 'new_email@example.com'
       post '/person', @person.to_json
       
       get '/person'
       
       last_response.status.should == 200
       result = JSON.parse(last_response.body)
-      result.length.should == 2
-      # Second record should have the updated email address
-      result[1]['email'].should == 'new_email@example.com'
+      result.length.should == 2 # Admin user already in db
     end
   end
   
   describe "GET '/person' by id" do
     it "with invalid id should return 404" do
-      get '/person/1'
+      get '/person/2'
       
       last_response.status.should == 404    
     end
@@ -98,7 +95,7 @@ describe "SongTest Person" do
   
   describe "PUT '/person/:id'" do
     it "with invalid id should return 404" do
-      put '/person/1', @person.to_json
+      put '/person/2', @person.to_json
       
       last_response.status.should == 400
     end
@@ -135,7 +132,7 @@ describe "SongTest Person" do
   
   describe "DELETE '/person' by id" do
     it "with invalid id should return 404" do
-      delete '/person/1'
+      delete '/person/2'
       
       last_response.status.should == 404
     end
@@ -151,7 +148,7 @@ describe "SongTest Person" do
   
   describe "GET /person/:id/songs" do
     it "with no matching person id should return 404" do
-      get '/person/1/songs'
+      get '/person/2/songs'
       last_response.status.should == 404
     end
     
@@ -176,7 +173,7 @@ describe "SongTest Person" do
   
   describe "GET /person/:id/votes" do
     it "with no matching person id should return 404" do
-      get '/person/1/votes'
+      get '/person/2/votes'
       last_response.status.should == 404
     end
     

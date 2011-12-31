@@ -2,6 +2,7 @@ require File.dirname(__FILE__) + '/../app'
 require 'rack/test'
 require 'factory_girl'
 require 'factories'
+require 'base64'
 
 # Set test environment
 Sinatra::Base.set :environment, :test
@@ -26,6 +27,14 @@ RSpec.configure do |config|
       transaction.begin
       repository.adapter.push_transaction(transaction)
     end
+      
+    @person = FactoryGirl.attributes_for(:person)
+    @person[:email] = 'noah.heldman@gmail.com'
+    person = Person.create(@person)
+    role = Role.create(:name => 'Administrator')
+    person.roles << role
+    person.save
+    authorize @person[:email], @person[:password]
   end
     
   config.after(:each) do
@@ -45,4 +54,8 @@ def validation_error field, status, message
       field => [message]
     }
   }.to_json
+end
+
+def basic_auth(username, password)
+  "Basic " + Base64.encode64("#{username}:#{password}")
 end

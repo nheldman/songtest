@@ -30,6 +30,7 @@ end
 
 # These requires must be at the bottom of the file
 require_relative 'person'
+require_relative 'role'
 require_relative 'genre'
 require_relative 'song'
 require_relative 'vote'

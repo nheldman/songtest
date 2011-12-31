@@ -14,19 +14,34 @@ end
 ## SongTest application
 class SongTest < Sinatra::Base
   set :methodoverride, true
-
-  # TODO: Authorization: this will return 401 for all person requests
-  #before '/person/*' do  # If you just use "before do", it will be for ALL requests
-  #  halt 401, "Not Authorized"
-  #end
   
   ## helpers
   def self.put_or_post(*a, &b)
     put *a, &b
     post *a, &b
   end
+  
+  before do  # Run this before ALL requests
+    pass if request.request_method == "POST" && request.path_info == '/person'
+    authenticate_user!
+  end
 
   helpers do
+    def authenticate_user!
+      auth = Rack::Auth::Basic::Request.new(request.env)
+      
+      if auth.provided? && auth.basic? && auth.credentials
+        person = Person.first(:email => auth.credentials[0])
+      end
+
+      if person && person.password == auth.credentials[1]
+        return true
+      else
+        response['WWW-Authenticate'] = %(Basic realm="Restricted Area")
+        throw(:halt, json_status(401, "Not Authorized"))
+      end
+    end
+
     def json_status(code, reason)
       status code
       {
@@ -47,4 +62,4 @@ end
 
 # These requires must be at the bottom of the file
 require_relative 'models/init'
-require_relative 'routes/init' 
+require_relative 'routes/init'
