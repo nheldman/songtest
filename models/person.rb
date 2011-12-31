@@ -15,6 +15,18 @@ class Person
   has n, :votes
   has 1, :company
   
+  # We are defining this here so we never return the password
+  def to_json(*a)
+    {
+      'id' => self.id,
+      'first_name' => self.first_name,
+      'last_name' => self.last_name,
+      'email' => self.email,
+      'created_at' => self.created_at,
+      'updated_at' => self.updated_at
+    }.to_json(*a)
+  end
+  
   def in_role? (role)
     roles.any? { |r| r.name.to_sym == role }
   end

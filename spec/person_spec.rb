@@ -91,6 +91,16 @@ describe "SongTest Person" do
       result = JSON.parse(last_response.body)
       result['id'].should == 1
     end
+    
+    it "with valid id should return 200 and should not return the password" do
+      post '/person', @person.to_json
+      
+      get '/person/1'
+      
+      last_response.status.should == 200
+      result = JSON.parse(last_response.body)
+      result['password'].should == nil
+    end
   end
   
   describe "PUT '/person/:id'" do
