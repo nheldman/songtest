@@ -29,12 +29,17 @@ class Song
     # Get a song from the database that has not yet been voted for by this person,
     # and has the fewest total votes
     
+    # TODO: Restrict this to only return results for the current contest (current month?)
+    
     # First, see if there are any songs with no votes.  If so, grab the first one.
-    # TODO: Don't include songs submitted by the current person_id
     if first_song_with_no_votes = Song.first(:votes => nil, :order => [ :created_at.asc ])
       first_song_with_no_votes
     else
-      Song.first(Song.votes.person_id.not => person_id, :order => [ :vote_count.asc ])
+      songs_by_fewest_votes = Song.all(Song.votes.person_id.not => person_id, :order => [ :vote_count.asc ])
+      songs_by_current_user = Song.all(:person_id => person_id)
+      
+      matching_songs = songs_by_fewest_votes - songs_by_current_user
+      matching_songs.first
     end
   end
 end

@@ -15,7 +15,7 @@ class Person
   has n, :votes
   has 1, :company
   
-  # We are defining this here so we never return the password
+  # We are overriding to_json here so we never return the password
   def to_json(*a)
     {
       'id' => self.id,
@@ -29,5 +29,14 @@ class Person
   
   def in_role? (role)
     roles.any? { |r| r.name.to_sym == role }
+  end
+  
+  def is_admin?
+    in_role? (:admin)
+  end
+  
+  after :create do
+    roles << Role.first_or_create(:name => 'user')
+    self.save
   end
 end

@@ -12,9 +12,8 @@ class SongTest < Sinatra::Base
   end
   
   ## POST /song/random - return a random song (that has not yet been voted for) with one-time-use random id
-  post '/song/random', :provides => :json do    
-    # TODO: Check that the current user and person_id match
-    person_id = Person.first.id
+  post '/song/random', :auth => [ :user ], :provides => :json do    
+    person_id = session[:user].id
     
     random_id = Song.random_id
     
@@ -29,22 +28,23 @@ class SongTest < Sinatra::Base
   end
   
   ## GET /song/<random_id> - redirect from /song/random
-  get %r{/song/([a-z0-9]{12})} do
+  get %r{/song/([a-z0-9]{12})}, :auth => [ :user ], :provides => :json do
     random_id = params[:captures].first
     
     vote = Vote.first(:random_id => random_id)
     
     if !vote
       return json_status 400, "#{random_id} is not a valid song id"
+    elsif vote.person_id != session[:user].id
+      return json_status 401, "You are not authorized to access this song"
     end
     
-    # TODO: If song.person_id !== current user id, return 400
     song = Song.get(:id => vote.song_id)
     song.to_json
   end
   
   ## GET /song/:id - return song with specified id
-  get '/song/:id', :provides => :json do
+  get '/song/:id', :auth => [ :admin ], :provides => :json do
     content_type :json
 
     # check that :id param is an integer

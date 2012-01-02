@@ -1,7 +1,8 @@
 class SongTest < Sinatra::Base
   
+  # TODO: Roles.  For many routes, need to ensure that we only allow admins or the user matching the id
   ## GET /person - return all people
-  get '/person', :auth => [ :Administrator ], :provides => :json do
+  get '/person', :auth => [ :admin ], :provides => :json do
     content_type :json
     
     if people = Person.all
@@ -12,13 +13,17 @@ class SongTest < Sinatra::Base
   end
   
   ## GET /person/:id - return person with specified id
-  get '/person/:id', :auth => [ :User ], :provides => :json do
+  get '/person/:id', :provides => :json do
     content_type :json
 
     # check that :id param is an integer
     if Person.valid_id?(params[:id])
       if person = Person.first(:id => params[:id].to_i)
-        person.to_json
+        if person.is_admin? || person == session[:user]
+          person.to_json
+        else
+          json_status 401, "Not authorized"
+        end
       else
         json_status 404, "Not found"
       end

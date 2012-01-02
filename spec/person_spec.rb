@@ -53,6 +53,16 @@ describe "SongTest Person" do
       result = JSON.parse(last_response.body)
       result['id'].should == 2 # Admin user is id 1
     end
+    
+    it "with valid person should add person to User role" do
+      post '/person', @person.to_json
+      
+      last_response.status.should == 201
+      result = JSON.parse(last_response.body)
+      result['id'].should == 2 # Admin user is id 1
+      person = Person.get(result['id'])
+      person.in_role?(:user).should == true
+    end  
   end
   
   describe "GET '/person'" do
@@ -100,6 +110,14 @@ describe "SongTest Person" do
       last_response.status.should == 200
       result = JSON.parse(last_response.body)
       result['password'].should == nil
+    end
+    
+    it "with valid id should return 401 if not current user and not admin" do
+      post '/person', @person.to_json
+      PersonRole.get(1, 1).destroy
+      get '/person/2'
+      
+      last_response.status.should == 401
     end
   end
   

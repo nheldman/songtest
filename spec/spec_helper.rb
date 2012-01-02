@@ -28,11 +28,12 @@ RSpec.configure do |config|
       repository.adapter.push_transaction(transaction)
     end
       
+    # Create an admin user for testing purposes
     @person = FactoryGirl.attributes_for(:person)
     @person[:email] = 'noah.heldman@gmail.com'
     person = Person.create(@person)
-    admin_role = Role.create(:name => 'Administrator')
-    user_role = Role.create(:name => 'User')
+    admin_role = Role.create(:name => 'admin')
+    user_role = Role.create(:name => 'user')
     person.roles << admin_role << user_role
     person.save
     authorize @person[:email], @person[:password]

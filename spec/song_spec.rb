@@ -111,7 +111,6 @@ describe "SongTest Song" do
       # Vote for one of them as the current user
       person_id = 1
       
-      # TODO: Use the API instead, or is this better because it is more like a mock?
       # Don't provide a rating here, we're just getting a vote placeholder
       vote = Vote.create(:person_id => person_id, :song_id => 1, :random_id => '1234567890ab')
       
@@ -123,6 +122,7 @@ describe "SongTest Song" do
     it "should have the fewest votes" do
       # Add two songs
       post '/song', @song.to_json
+      @song[:person_id] = 2
       post '/song', @song.to_json
       
       # Vote for the first one twice, and the second one once

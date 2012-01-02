@@ -48,7 +48,7 @@ class SongTest < Sinatra::Base
 
   ## PUT /vote/:id - change or create a vote
   # TODO: Should this be allowed?  If so, should we only allow rating/comment to be updated?
-  put '/vote/:id', :provides => :json do
+  put '/vote/:id', :auth => [ :admin ], :provides => :json do
     content_type :json
 
     if Vote.valid_id?(params[:id])
@@ -70,7 +70,7 @@ class SongTest < Sinatra::Base
 
   ## DELETE /vote/:id - delete a specific vote
   # TODO: Should this be allowed?  If so, admins only?  Admins and voting user only?
-  delete '/vote/:id', :provides => :json do
+  delete '/vote/:id', :auth => [ :admin ], :provides => :json do
     content_type :json
 
     if vote = Vote.first(:id => params[:id].to_i)
