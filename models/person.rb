@@ -5,10 +5,10 @@ class Person
   include StandardProperties
   extend Validations
 
-  property :first_name,           String, :required => true
-  property :last_name,            String, :required => true
-  property :email,                String, :required => true, :length => 100, :format => :email_address, :unique => true
-  property :password,             BCryptHash, :required => true
+  property :first_name, String, :required => true
+  property :last_name,  String, :required => true
+  property :email,      String, :required => true, :length => 100, :format => :email_address, :unique => true
+  property :password,   BCryptHash, :required => true
   
   has n, :roles, :through => Resource
   has n, :songs
@@ -35,6 +35,7 @@ class Person
     in_role? (:admin)
   end
   
+  # Automatically add new people to the "User" role
   after :create do
     roles << Role.first_or_create(:name => 'user')
     self.save
